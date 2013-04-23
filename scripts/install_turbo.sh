@@ -31,4 +31,4 @@ rm english_proj_parser.tar.gz
 #Export command to use TurboParser
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pwd;`/deps/local/lib:"
 #Test TurboParser (comment this line out later)
-echo "I solved the problem with statistics." | ./scripts/parse.sh
+#echo "I solved the problem with statistics." | ./scripts/parse.sh
