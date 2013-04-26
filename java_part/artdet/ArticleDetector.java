@@ -21,10 +21,26 @@ import weka.classifiers.bayes.NaiveBayesSimple;
 import weka.classifiers.xml.XMLClassifier;
 import weka.core.Instances;
 import weka.core.Instance;
+import weka.core.converters.ConverterUtils;
+import weka.classifiers.functions.LibLINEAR;
+import weka.classifiers.functions.Logistic;
 
 /**
  * Program to determine whether a news article is real or fake,
  * given a Weka classifier.
+ * 
+ * Note about runtime error message: when you run this, you'll get the
+ * following error/warning message:
+ * 
+ * ---Registering Weka Editors---
+ * Trying to add database driver (JDBC): RmiJdbc.RJDriver - Error, not in CLASSPATH?
+ * Trying to add database driver (JDBC): jdbc.idbDriver - Error, not in CLASSPATH?
+ * Trying to add database driver (JDBC): org.gjt.mm.mysql.Driver - Error, not in CLASSPATH?
+ * Trying to add database driver (JDBC): com.mckoi.JDBCDriver - Error, not in CLASSPATH?
+ * Trying to add database driver (JDBC): org.hsqldb.jdbcDriver - Error, not in CLASSPATH?
+ * 
+ * According to http://weka.wikispaces.com/Trying+to+add+JDBC+driver...+-+Error,+not+in+CLASSPATH%3F
+ * we can just ignore this.
  * 
  * @author Thomas Vandrunen
  */
@@ -55,7 +71,7 @@ public class ArticleDetector {
 			Classifier clsfier = null;
 			
 			// file for training data (if applicable; with dummy default value)
-			String trainingFile = "iris.arff";
+			String trainingFile = "J48 PointwisePredictions.csv";
 			
 			try {   // read flags (see usage())
 					// (note the i++ for flags that take a value)
@@ -90,24 +106,28 @@ public class ArticleDetector {
 			// load it
 			if (modelFile != null) 
 				clsfier = (Classifier) (new XMLClassifier()).read(modelFile);			
-			// otherwise, train one using data in the trainig file
+			// otherwise, train one using data in the training file
 			else if (clsfier == null) {
-				// *************
-				// since I don't know Weka, I just threw something together here
-				// that looked intelligent and compiled
-				// *************
-				clsfier = new NaiveBayesSimple();				
-				Instances trainingData = new Instances(new FileReader(trainingFile));
-				trainingData.setClassIndex(trainingData.numAttributes() - 1);
+				clsfier = new Logistic();
+				
+				ConverterUtils.DataSource source = new ConverterUtils.DataSource(trainingFile);
+				Instances trainingData = source.getDataSet();
+
+				// assume class index is 0!!!!
+				trainingData.setClassIndex(0);
 				clsfier.buildClassifier(trainingData);
 			}
 
 			// -- iterate over the feature vectors in the file ---
 			
-			int i = 0;  // counter so we can indicate which article we're on
+			// the following is obscelete if we use weka's own tools
+			// for reading in data
+			// -------
+			//int i = 0;  // counter so we can indicate which article we're on
 
 			// see documentation for getTestInstances() to understand
 			// how we're iterating over vectors
+			/*
 			for (Instance currentArticle : 
 				getTestInstances(new FileReader(vectorFile))) {
 
@@ -122,6 +142,21 @@ public class ArticleDetector {
 						((result > threshold) == high ? "Real" : "Fake"));	
 
 			}
+			*/
+			// ------------
+			
+			ConverterUtils.DataSource testSource = new ConverterUtils.DataSource(vectorFile);
+			Instances testData = testSource.getDataSet();
+			testData.setClassIndex(0);
+			for (int i = 0; i < testData.numInstances(); i++) {
+				double result = clsfier.classifyInstance(testData.instance(i));
+			
+				// Determine real or fake based on comparison with threshold
+				System.out.println((1-result) + "\t " + result + "\t" +
+						((result > threshold) == high ? "1" : "0"));	
+
+			}
+			
 		
 		} catch (Exception e) {
 			System.out.println("Exception: " + e.getMessage());
@@ -147,6 +182,9 @@ public class ArticleDetector {
 		
 	}
 	
+
+	// right now this is not being used... I'm assuming the file
+	// with feature vectors can be read by Weka's classes
 	/**
 	 * Package the feature vectors in a way that can be used with
 	 * a Java extended for loop. This is a great example of what stinks
@@ -233,7 +271,7 @@ public class ArticleDetector {
 	
 	// I made this pseudo-classifier that acts randomly so I could
 	// test the rest of the program before I got help
-	// from someon who understood Weka
+	// from someone who understood Weka
 	private static class GoofyClassifier extends Classifier {
 
 		private Random randy = new Random();
