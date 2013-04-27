@@ -1,0 +1,8 @@
+To run the Java program:
+
+java -cp .:weka.jar artdet.ArticleDetector [options.. see usage()]
+
+Note the "-cp" flag to the java VM; that's to make sure the Weka jar 
+file is in the classpath.
+
+
