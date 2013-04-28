@@ -28,10 +28,9 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pwd;`/deps/local/lib:"
 #Parse prepared data file
 echo "Parsing ${input_filename}.prep..."
 cd ${turbo_scripts_folder}
-${turbo_scripts_folder}/tokenizer.sed ${DIR}/${input_filename}.prep > ${turbo_tmp_folder}/tmp.tokenized
-sed 's/< UNK >/<UNK>/' ${turbo_tmp_folder}/tmp.tokenized > ${turbo_tmp_folder}/tmp.tokenized.fixed
-mv ${turbo_tmp_folder}/tmp.tokenized.fixed ${turbo_tmp_folder}/tmp.tokenized
-${turbo_scripts_folder}/create_conll_corpus_from_text.pl ${turbo_tmp_folder/tmp.tokenized > ${turbo_tmp_folder}/tmp.conll
+${turbo_scripts_folder}/tokenizer.sed ${DIR}/${input_filename}.prep > ${turbo_tmp_folder}/tmp.tok1
+sed 's/< UNK >/<UNK>/g' ${turbo_tmp_folder}/tmp.tok1 > ${turbo_tmp_folder}/tmp.tokenized
+${turbo_scripts_folder}/create_conll_corpus_from_text.pl ${turbo_tmp_folder}/tmp.tokenized > ${turbo_tmp_folder}/tmp.conll
 ${turbo_scripts_folder}/create_tagging_corpus.sh ${turbo_tmp_folder}/tmp.conll # Creates tmp.conll.tagging.
 ${turbo_scripts_folder}/run_tagger.sh ${turbo_tmp_folder}/tmp.conll.tagging # Creates tmp.conll.tagging.pred.
 ${turbo_scripts_folder}/create_conll_predicted_tags_corpus.sh ${turbo_tmp_folder}/tmp.conll ${turbo_tmp_folder}/tmp.conll.tagging.pred # Creates tmp.conll.predpos
@@ -48,3 +47,4 @@ echo "Done!"
 T="$(($(date +%s)-T))"
 date
 printf "Time elapsed: %02d:%02d:%02d:%02d\n" "$((T/86400))" "$((T/3600%24))" "$((T/60%60))" "$((T%60))"
+
