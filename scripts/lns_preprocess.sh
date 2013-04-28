@@ -10,7 +10,9 @@
 
 #Input args: input filename to preprocess, TurboParser-2.0.2 directory
 input_filename=$1
-turbo_scripts_dir=$2/scripts/
+turbo_scripts_folder=$2/scripts/
+turbo_tmp_folder=$2/scripts/tmp/
+DIR=$(cd $(dirname "$0"); pwd)
 
 #Get start time and print current time
 T="$(date +%s)"
@@ -25,7 +27,17 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:`pwd;`/deps/local/lib:"
 
 #Parse prepared data file
 echo "Parsing ${input_filename}.prep..."
-${turbo_scripts_dir}./parse.sh ${input_filename}.prep > ${input_filename}.parsed
+cd ${turbo_scripts_folder}
+${turbo_scripts_folder}/tokenizer.sed ${DIR}/${input_filename}.prep > ${turbo_tmp_folder}/tmp.tokenized
+sed 's/< UNK >/<UNK>/' ${turbo_tmp_folder}/tmp.tokenized > ${turbo_tmp_folder}/tmp.tokenized.fixed
+mv ${turbo_tmp_folder}/tmp.tokenized.fixed ${turbo_tmp_folder}/tmp.tokenized
+${turbo_scripts_folder}/create_conll_corpus_from_text.pl ${turbo_tmp_folder/tmp.tokenized > ${turbo_tmp_folder}/tmp.conll
+${turbo_scripts_folder}/create_tagging_corpus.sh ${turbo_tmp_folder}/tmp.conll # Creates tmp.conll.tagging.
+${turbo_scripts_folder}/run_tagger.sh ${turbo_tmp_folder}/tmp.conll.tagging # Creates tmp.conll.tagging.pred.
+${turbo_scripts_folder}/create_conll_predicted_tags_corpus.sh ${turbo_tmp_folder}/tmp.conll ${turbo_tmp_folder}/tmp.conll.tagging.pred # Creates tmp.conll.predpos
+${turbo_scripts_folder}/run_parser.sh ${turbo_tmp_folder}/tmp.conll.predpos # Creates tmp.conll.predpos.pred.
+cp ${turbo_tmp_folder}/tmp.conll.predpos.pred ${DIR}/${input_filename}.parsed
+cd ${DIR}
 
 #Create tagging formatted corpus and add document boundaries back into parsed file
 echo "Creating tagged corpus from ${input_filename}.parsed and adding document boundaries back into ${input_filename}.parsed..."
