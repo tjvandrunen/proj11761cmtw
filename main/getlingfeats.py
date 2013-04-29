@@ -21,8 +21,8 @@ def main(args):
 	#Read in files
 	tag_file_raw = open(args[1]).readlines()
 	parse_file_raw = open(args[2]).readlines()
-	judg = open("../data/original_data/developmentSetLabels.dat").readlines()
-	judg = [x.strip() for x in judg]
+	#judg = open("../data/original_data/developmentSetLabels.dat").readlines()
+	#judg = [x.strip() for x in judg]
 	#Organize files into a list of docs (where each doc is a long string)
 	tag_docs = []
 	parse_docs = []
@@ -81,8 +81,8 @@ def main(args):
 			feat = float(vec[j]) / vec[0]
 			vec_str.append(str(feat))
 		#Print features to stdout
-		print judg[i]+' '+' '.join(vec_str)
-		#print ' '.join(vec_str)
+		#print judg[i]+' '+' '.join(vec_str)
+		print ' '.join(vec_str)
 	return 0
 
 if __name__ == "__main__":
