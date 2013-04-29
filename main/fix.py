@@ -5,7 +5,7 @@ import sys
 test_data = open(sys.argv[1]).readlines()
 train_data = open("./Data/train.csv").readlines()
 
-if test_data[1].split(',')[0] == "TRUE":
+if test_data[1].split(',')[0] != train_data[1].split(',')[0]:
 	del train_data[1]
 
 f = open("./Data/train.csv",'w')

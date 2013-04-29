@@ -17,14 +17,14 @@
 # 2. the file containing the test set's labels #
 ################################################
 
-op3=dev
+op3=test
 
 #Run TurboParser
-#./install_turbo.sh
+./install_turbo.sh
 
 #Pre-Process Data using TurboParser
-#./lns_preprocess.sh $1 TurboParser-2.0.2
-./lns_preprocess.sh $1 ~/TurboParser-2.0.2
+./lns_preprocess.sh $1 TurboParser-2.0.2
+#./lns_preprocess.sh $1 ~/TurboParser-2.0.2
 
 #Copy input files into named files in Data folder
 cp $1 Data/testSet.dat
