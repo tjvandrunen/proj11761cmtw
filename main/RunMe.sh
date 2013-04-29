@@ -52,3 +52,8 @@ python realAddLabels.py model/testSet-features-with-median.csv Data/testSetLabel
 sed 's/ /,/g' model/testSet-median-and-labels.csv > model/$op3.csv
 
 #Run Weka on feature set
+./fix.py model/$op3.csv
+
+cd java_part
+javac -cp .:weka.jar artdet/ArticleDetector.java
+java -cp .:weka.jar artdet.ArticleDetector -t ../Data/train.csv ../model/$op3.csv
