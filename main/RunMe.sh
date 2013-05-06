@@ -17,18 +17,20 @@
 # 2. the file containing the test set's labels #
 ################################################
 
+op1=`readlink -f $1`
+op2=`readlink -f $2`
 op3=test
 
 #Run TurboParser
 ./install_turbo.sh
 
 #Pre-Process Data using TurboParser
-./lns_preprocess.sh $1 TurboParser-2.0.2
-#./lns_preprocess.sh $1 ~/TurboParser-2.0.2
+./lns_preprocess.sh $op1 ./TurboParser-2.0.2
+#./lns_preprocess.sh $op1 ~/TurboParser-2.0.2
 
 #Copy input files into named files in Data folder
-cp $1 Data/testSet.dat
-cp $2 Data/testSetLabels.dat
+cp $op1 Data/testSet.dat
+cp $op2 Data/testSetLabels.dat
 
 #Formats data for topic model
 python Data/makeTestCSV.py Data/testSet.dat Data/testSet.csv
@@ -43,7 +45,7 @@ python findMedian.py model/testSet-document-topic-distributuions.csv model/testS
 rm -f testSet-document-topic-distributions.csv
 
 #Get linguistic features from tagged and parsed data
-python getlingfeats.py $1.tagged $1.parsed.fixed > Data/other_feats.csv
+python getlingfeats.py $op1.tagged $op1.parsed.fixed > Data/other_feats.csv
 
 #Merge topic model features and linguistic features
 python realAddLabels.py model/testSet-features-with-median.csv Data/testSetLabels.dat Data/other_feats.csv model/testSet-median-and-labels.csv
