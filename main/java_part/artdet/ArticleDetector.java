@@ -159,8 +159,8 @@ public class ArticleDetector {
 				}
 			
 				// Determine real or fake based on comparison with threshold
-				System.out.println(result + "\t " + (1-result) + "\t" +
-						((result > threshold) == high ? "0" : "1"));	
+				System.out.println((1-result) + "\t " + result + "\t" +
+						((result > threshold) == high ? "1" : "0"));	
 
 			}
 			

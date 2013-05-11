@@ -12,7 +12,8 @@ def main(args):
 	for i in xrange(len(gold)):
 		if gold[i] == ours[i]:
 			acc += 1.
-	print acc/200
+	print str(int(acc))+" labels correct out of "+str(int(len(gold)))
+	print str(acc/200)+" accuracy"
 	return 0
 
 if __name__ == '__main__':
