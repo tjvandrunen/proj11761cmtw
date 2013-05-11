@@ -151,10 +151,15 @@ public class ArticleDetector {
 			for (int i = 0; i < testData.numInstances(); i++) {
 				double[] results = clsfier.distributionForInstance(testData.instance(i));
 				double result = results[0];
+				if (result > 0.5) {
+					result = result - 0.05;
+				} else {
+					result = result + 0.05;
+				}
 			
 				// Determine real or fake based on comparison with threshold
-				System.out.println((1-result) + "\t " + result + "\t" +
-						((result > threshold) == high ? "1" : "0"));	
+				System.out.println(result + "\t " + (1-result) + "\t" +
+						((result > threshold) == high ? "0" : "1"));	
 
 			}
 			
