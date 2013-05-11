@@ -24,6 +24,7 @@ import weka.core.Instance;
 import weka.core.converters.ConverterUtils;
 import weka.classifiers.functions.LibLINEAR;
 import weka.classifiers.functions.Logistic;
+import weka.classifiers.functions.SMO;
 
 /**
  * Program to determine whether a news article is real or fake,
@@ -108,7 +109,7 @@ public class ArticleDetector {
 				clsfier = (Classifier) (new XMLClassifier()).read(modelFile);			
 			// otherwise, train one using data in the training file
 			else if (clsfier == null) {
-				clsfier = new Logistic();
+				clsfier = new SMO();
 				
 				ConverterUtils.DataSource source = new ConverterUtils.DataSource(trainingFile);
 				Instances trainingData = source.getDataSet();
