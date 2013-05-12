@@ -21,12 +21,16 @@ op1=`readlink -f $1`
 op2=`readlink -f $2`
 op3=test
 
+#Remove empty lines from op1 and op2
+sed -i '/^$/d' $op1
+sed -i '/^$/d' $op2
+
 #Run TurboParser
-./install_turbo.sh
+#./install_turbo.sh
 
 #Pre-Process Data using TurboParser
-./lns_preprocess.sh $op1 ./TurboParser-2.0.2
-#./lns_preprocess.sh $op1 ~/TurboParser-2.0.2
+#./lns_preprocess.sh $op1 ./TurboParser-2.0.2
+./lns_preprocess.sh $op1 ~/TurboParser-2.0.2
 
 #Copy input files into named files in Data folder
 cp $op1 Data/testSet.dat
